@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        img {
+max-width: 100%;
+  height: auto;
+  position: relative;
+ left: 20%;
+}
+body {
+  background-color: lightblue;
+}
+    </style>
+</head>
+<body>
+
+<h1>Video Streaming Demonstration</h1>
+    <img src="http://127.0.0.1:5000/video_feed">
+<script>
+             var socket = io('http://127.0.0.1:5000');
+            socket.on("connect",(socket)=>{
+             console.log("nadhem client connecte");})
+             document.addEventListener('keypress',()=>{
+
+
+                  if(event.keyCode===32){
+                          socket.emit("get",{ "status":"P"});
+                   }
+                   if(event.keyCode===122){
+
+                          socket.emit("get",{ "status":"F"});
+
+                   }
+                   if(event.keyCode===115){
+                          socket.emit("get",{ "status":"B"});
+                   }
+                   if(event.keyCode===113){
+                          socket.emit("get",{ "status":"L"})
+                   }
+                   if(event.keyCode===100){
+                          socket.emit("get",{ "status":"R"})
+                   }
+
+
+            });
+            document.addEventListener('keyup',()=>{
+
+
+               socket.emit("get",{ "status":"P"});
+
+
+
+         });
+         socket.on("b",(socket)=>{
+             console.log("hi");})
+        </script>
+</body>
+</html>
