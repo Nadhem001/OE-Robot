@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!-- Created By CodingLab - www.codinglabweb.com -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <title>Login Form | CodingLab</title> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+     <link href="{{ url_for('static', filename='styles/login.css') }}" rel="stylesheet" type="text/css">
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="wrapper">
+        <div class="title"><span>OË - ROBOT</span></div>
+        <form action="{{url_for('login')}}"method='POST'>
+          <div class="row">
+            <i class="fas fa-user"></i>
+            <input type="text" name="codeInv" id="codeInv" placeholder="Code d'invitation" required>
+          </div>
+
+          <div class="row button">
+            <input type="submit" value="Connexion">
+          </div>
+
+        </form>
+       
+        </div>
+        <br>
+        {% if x %}
+        <div class="alert alert-danger" role="alert">
+          {{x}}
+      </div>
+      {% endif %}
+    </div>
+<script>
+ /* $(document).ready(function() {
+    $('form').on('submit', function(event) {
+      $.ajax({
+        data : {
+          codeInv : $('#codeInv').val(),
+         
+        },
+        type : 'POST',
+        url : '/log'
+      })
+    })
+  })*/
+      
+</script>
+  </body>
+</html>

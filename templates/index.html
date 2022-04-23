@@ -1,62 +1,212 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>index</title>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    <style>
-        img {
-max-width: 100%;
-  height: auto;
-  position: relative;
- left: 20%;
-}
-body {
-  background-color: lightblue;
-}
-    </style>
+  <title></title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+  <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet" type="text/css">
+
+
 </head>
+
 <body>
+  <div class="loader">
+    <span class="lettre">I</span>
+    <span class="lettre">n</span>
+    <span class="lettre">d</span>
+    <span class="lettre">u</span>
+    <span class="lettre">s</span>
+    <span class="lettre">t</span>
+    <span class="lettre">r</span>
+    <span class="lettre">i</span>
+    <span class="lettre">e</span>
+    <span class="lettre">4</span>
+    <span class="lettre">.</span>
+    <span class="lettre">0</span>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+      
 
-<h1>Video Streaming Demonstration</h1>
-    <img src="http://127.0.0.1:5000/video_feed">
-<script>
-             var socket = io('http://127.0.0.1:5000');
-            socket.on("connect",(socket)=>{
-             console.log("nadhem client connecte");})
-             document.addEventListener('keypress',()=>{
+        <div class="arrow-wrapper-gch">
+          <div id="btn-up" class="arrow-up"></div>
+          <div id="btn-down" class="arrow-down"></div>
+        </div>
+      </div>
+      <div class="col-6  offset-lg-2  show">
+             <div class="titre"><h3 class="mt-5">OË-ROBOT</h3></div>
+        <div id="dist" class="alert alert-success">
+          <strong>Distance :</strong> <span id='x'></span> 
+        </div class="showVideo">
+        <div>
+        <img src="{{ url_for('video_feed') }}" width="100%">
+      </div>
+      </div>
+      <div class="col">
+        <div class="arrow-wrapper-dr">
+          <div id="btn-lft" class="arrow-left"></div>
+          <div id="btn-rgt" class="arrow-right"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function marche(x) {
+
+      $.ajax({
+        data: {
+          direction: x,
+
+        },
+        type: 'POST',
+        url: '/process'
+      }).done(function (data) {
+
+        if (data.error) {
+          alert(data.ok)
+        } else {
+          //document.getElementById('x').innerHTML = data.ok
+        }
+
+      });
+    }
+    directionY="devant"
+    function getDist(x)
+    {
+      
+      $.ajax({
+        data: {
+          direction: x,
+
+        },
+        type: 'POST',
+        url: '/getDist'
+      }).done(function (data) {
+
+        if (data.error) {
+          alert("data.dist")
+        } else {
+          
+          var nb=parseInt(data.dist)
+         
+             if (nb<40){
+            $("#dist").attr('class', 'alert alert-danger');
+            document.getElementById('x').innerHTML = "Les moteurs a été arrêté car un obstacle a été détecté "+ directionY +" vous est à: "+data.dist+" cm"
+            
+          }
+          else if ((nb<60)&&(nb>40)){
+            $("#dist").attr('class', 'alert alert-warning');
+            document.getElementById('x').innerHTML = "Attention un obstacle a été détecté "+ directionY +" vous est à: "+data.dist+" cm"
+          }
+       
+          else{
+            $("#dist").attr('class', 'alert alert-success');
+            document.getElementById('x').innerHTML = "Un obstacle a été détecté "+ directionY +" vous est à: "+data.dist+" cm"
+          }
+          
+        }
+
+      });
+    }
+    window.addEventListener('load', function () {
+            getDist('f')
+  
+      })
+    var poste = false;
+
+    document.addEventListener('keypress', () => {
+
+      if (poste == false) {
+        poste = true;
+
+        if (event.keyCode === 122) {
+          directionY="devant"
+        
+         marche("F")
+         getDist("f")
+          console.log("f");
+          let d1 = document.getElementById("btn-up");
+          if (getComputedStyle(d1).display == "none") {
+            d1.style.display = "block";
+          }
+
+        }
+        if (event.keyCode === 115) {
+          directionY="derrière "
+         
+          marche("B")
+          getDist("b")
+          console.log("b");
+          let d1 = document.getElementById("btn-down");
+          if (getComputedStyle(d1).display == "none") {
+            d1.style.display = "block";
+          }
+
+        }
+        if (event.keyCode === 113) {
+  
+          marche("L")
+          console.log("l");
+          let d1 = document.getElementById("btn-lft");
+          if (getComputedStyle(d1).display == "none") {
+            d1.style.display = "block";
+          }
+        }
+        if (event.keyCode === 100) {
+     
+          marche("R")
+          console.log("r");
+          let d1 = document.getElementById("btn-rgt");
+          if (getComputedStyle(d1).display == "none") {
+            d1.style.display = "block";
+          }
+
+        }
+      }
 
 
-                  if(event.keyCode===32){
-                          socket.emit("get",{ "status":"P"});
-                   }
-                   if(event.keyCode===122){
+    });
+    document.addEventListener('keyup', () => {
 
-                          socket.emit("get",{ "status":"F"});
+      poste = false;
+  
+      marche("s");
+      console.log("s");
+      if (directionY=='devant'){
+        getDist('f')
+      }else
+      {
+        getDist('b')
+      }
+      let d2 = document.getElementById("btn-lft");
+      if (getComputedStyle(d2).display == "block") {
+        d2.style.display = "none";
+      }
 
-                   }
-                   if(event.keyCode===115){
-                          socket.emit("get",{ "status":"B"});
-                   }
-                   if(event.keyCode===113){
-                          socket.emit("get",{ "status":"L"})
-                   }
-                   if(event.keyCode===100){
-                          socket.emit("get",{ "status":"R"})
-                   }
+      let d3 = document.getElementById("btn-rgt");
+      if (getComputedStyle(d3).display == "block") {
+        d3.style.display = "none";
+      }
+      let d4 = document.getElementById("btn-up");
+      if (getComputedStyle(d4).display == "block") {
+        d4.style.display = "none";
+      }
+      let d5 = document.getElementById("btn-down");
+      if (getComputedStyle(d5).display == "block") {
+        d5.style.display = "none";
+      }
 
 
-            });
-            document.addEventListener('keyup',()=>{
+    });
+  
+  </script>
+  <script src="{{ url_for("static",filename='js/app.js') }}"></script>
+ 
 
-
-               socket.emit("get",{ "status":"P"});
-
-
-
-         });
-         socket.on("b",(socket)=>{
-             console.log("hi");})
-        </script>
 </body>
-</html>
